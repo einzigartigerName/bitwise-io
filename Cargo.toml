@@ -1,6 +1,6 @@
 [package]
 name = "bitwise-io"
-version = "0.1.0"
+version = "0.1.1"
 description = "buffered bitwise input/output"
 readme = "./README.md"
 repository = "https://github.com/einzigartigername/bitwise-io"
