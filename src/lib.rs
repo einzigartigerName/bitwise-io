@@ -52,7 +52,7 @@ impl<R: BufRead> BitReader<R> {
         }
 
         if self.is_empty() {
-            Err(std::io::Error::new(ErrorKind::Other, "End of File"))
+            return Err(std::io::Error::new(ErrorKind::Other, "End of File"))
         }
 
         let mut byte_offset = self.pos / 8;
