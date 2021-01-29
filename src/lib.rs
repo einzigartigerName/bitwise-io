@@ -20,7 +20,6 @@ pub struct BitReader<R: BufRead> {
     inner: R,
     buf: Box<[u8]>,
     pos: usize,
-    init_read: bool,
 }
 
 const DEFAULT_BUF_SIZE: usize = 1024;
@@ -42,15 +41,11 @@ impl<R: BufRead> BitReader<R> {
     pub fn new(mut inner: R) -> std::io::Result<BitReader<R>> {
         let buf = inner.fill_buf()?.to_vec().into_boxed_slice();
 
-        Ok(BitReader { inner, buf, pos: 0 , init_read: false})
+        Ok(BitReader { inner, buf, pos: 0})
     }
 
     /// Read a single Bit from BufRead
     pub fn read(&mut self) -> std::io::Result<Bit> {
-        if self.init_read == false {
-            reader_fill_buf(self)?;
-        }
-
         if self.is_empty() {
             return Err(std::io::Error::new(ErrorKind::Other, "End of File"))
         }
@@ -89,14 +84,13 @@ impl<R: BufRead> BitReader<R> {
     }
 
     /// Returns true if the Buffer is empty
-    /// Always true after newly created
     pub fn is_empty(&self) -> bool {
-        self.buf.is_empty()
+        self.buf_len() - self.pos == 0
     }
 
     /// Returns the length of the internal buffer
     pub fn buf_len(&self) -> usize {
-        self.buf.len()
+        self.buf.len() * 8
     }
 }
 
