@@ -1,18 +1,20 @@
+//! # bitwise-io
+//!
+//! A simple wrapper around the `BufRead` and `Write` Trait for bitwise IO
+//!
 use std::io::{BufRead, Write};
 use std::fmt::{Display, Formatter};
 use std::collections::VecDeque;
 
+
+/// Bit representation
 #[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub enum Bit {
     Zero = 0,
     One = 1,
 }
 
-#[derive(Debug)]
-pub struct BinValue {
-    pub val: Vec<Bit>,
-}
-
+/// Reader for bitwise reading from `BufRead`
 #[derive(Debug)]
 pub struct BitReader<R: BufRead> {
     inner: R,
@@ -23,6 +25,7 @@ pub struct BitReader<R: BufRead> {
 
 const DEFAULT_BUF_SIZE: usize = 1024;
 
+/// Writer to bitwise writing to `Write`
 #[derive(Debug)]
 pub struct BitWriter<W: Write> {
     inner: W,
