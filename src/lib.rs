@@ -2,7 +2,7 @@
 //!
 //! A simple wrapper around the `BufRead` and `Write` Trait for bitwise IO
 //!
-use std::io::{BufRead, Write};
+use std::io::{BufRead, Write, ErrorKind};
 use std::fmt::{Display, Formatter};
 use std::collections::VecDeque;
 
@@ -51,6 +51,10 @@ impl<R: BufRead> BitReader<R> {
             reader_fill_buf(self)?;
         }
 
+        if self.is_empty() {
+            Err(std::io::Error::new(ErrorKind::Other, "End of File"))
+        }
+
         let mut byte_offset = self.pos / 8;
         let mut bit_offset = self.pos % 8;
 
@@ -74,34 +78,12 @@ impl<R: BufRead> BitReader<R> {
     }
 
     /// Try Reading n Bits from BufRead
-    pub fn read_multi(&mut self, n: u8) -> std::io::Result<Vec<Bit>> {
-        if self.init_read == false {
-            reader_fill_buf(self)?;
-        }
-
-        let mut byte_offset = self.pos / 8;
-        let mut bit_offset = self.pos % 8;
-
-        let mut output: Vec<Bit> = Vec::new();
+    pub fn read_multi(&mut self, n: usize) -> std::io::Result<Vec<Bit>> {
+        let mut output = Vec::with_capacity(n);
 
         for _ in 0..n {
-            let byte = self.buf[byte_offset];
-
-            let mask = 1 << (7 - bit_offset);
-
-            let bit = Bit::from(byte & mask);
-            output.push(bit);
-
-            bit_offset += 1;
-            if bit_offset > 7 {
-                let byte_o = reader_update(self, byte_offset + 1)?;
-
-                byte_offset = byte_o;
-                bit_offset = 0;
-            }
+            output.push(self.read()?);
         }
-
-        self.pos = byte_offset * 8 + bit_offset;
 
         Ok(output)
     }
