@@ -5,7 +5,7 @@ A Rust Library that enables you to read/write single bits from/to a stream
 Add this to your `Cargo.toml`
 ```toml
 [dependencies]
-bitwise-io = "0.1.0"
+bitwise-io = "0.1.2"
 ```
 
 ## Internal
