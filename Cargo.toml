@@ -1,0 +1,16 @@
+[package]
+name = "bitwise-io"
+version = "0.1.0"
+description = "buffered bitwise input/output"
+readme = "./README.md"
+repository = "https://github.com/einzigartigername/bitwise-io"
+authors = ["einzigartigerName"]
+keywords = ["io", "bitwise", "bitstream"]
+license = "MIT"
+edition = "2018"
+
+[lib]
+name = "bitwise"
+path = "./src/lib.rs"
+
+[dependencies]
